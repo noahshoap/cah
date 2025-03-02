@@ -1,8 +1,10 @@
+using cah.Abstractions;
+
 namespace cah.Domain;
 
-public class CardSet
+public class CardSet : ICardSet
 {
-    private List<Card> _cards;
+    private readonly List<Card> _cards = [];
 
     public void AddCard(Card card)
     {

@@ -48,8 +48,8 @@ public class CardServiceUnitTests : IDisposable
     {
         var cards = new List<Card>
         {
-            new Card(0, "hi", CardType.Answer),
-            new Card(1, "hello?", CardType.Question),
+            new Card(0, "hi", CardType.Answer, "base"),
+            new Card(1, "hello?", CardType.Question, "base"),
         };
         
         var jsonContent = JsonSerializer.Serialize(cards);
