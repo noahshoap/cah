@@ -6,7 +6,7 @@ namespace cah.Services;
 
 public class CardService : ICardService
 {
-    private Dictionary<string, ICardSet> _cardSets = new();
+    private readonly Dictionary<string, CardSet> _cardSets = new();
     
     public void LoadCards(string path)
     {
@@ -34,7 +34,7 @@ public class CardService : ICardService
     {
         if (_cardSets.TryGetValue(name, out var cardSet))
         {
-            return (CardSet)cardSet;
+            return cardSet;
         }
         
         var set = new CardSet();
