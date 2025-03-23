@@ -1,10 +1,10 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=9d9dd19f_002D3ac8_002D4782_002Db10b_002D4cb04dc4b8b1/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="CardServiceUnitTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=9d9dd19f_002D3ac8_002D4782_002Db10b_002D4cb04dc4b8b1/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CardServiceUnitTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;xUnit::6EBDDB18-A4A7-4774-96FD-1861D125BF93::net8.0::UnitTests.CardServiceUnitTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=c8099b1e_002Ddf92_002D43c9_002D821b_002D7d9834f499ed/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CardServiceUnitTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=c8099b1e_002Ddf92_002D43c9_002D821b_002D7d9834f499ed/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="CardServiceUnitTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;xUnit::6EBDDB18-A4A7-4774-96FD-1861D125BF93::net8.0::UnitTests.CardServiceUnitTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
