@@ -9,28 +9,39 @@ using Xunit;
 
 public class GameHubTests
 {
-    private string _connectionId;
+    private const uint DEFAULT_CLIENTS = 3;
+    private List<string> _connectionIds = new();
     private Guid _gameId;
     private IGameFactory _fakeGameFactory;
-    private IGameClient _fakeGameClient;
+    private Dictionary<string, IGameClient> _fakeGameClients = new();
     private IGame _fakeGame;
-    private HubCallerContext _fakeHubCallerContext;
+    private Dictionary<string, HubCallerContext> _fakeHubCallerContexts = new();
     private IHubCallerClients<IGameClient> _fakeClients;
 
     public GameHubTests()
     {
         _fakeGameFactory = A.Fake<IGameFactory>();
-        _fakeGameClient = A.Fake<IGameClient>();
         _fakeGame = A.Fake<IGame>();
-        _fakeHubCallerContext = A.Fake<HubCallerContext>();
         _fakeClients = A.Fake<IHubCallerClients<IGameClient>>();
+
+        for (var i = 0; i < DEFAULT_CLIENTS; i++)
+        {
+            var connectionId = Guid.NewGuid().ToString();
+            _connectionIds.Add(connectionId);
+            
+            var fakeClient = A.Fake<IGameClient>();
+            _fakeGameClients.Add(connectionId, fakeClient);
+            
+            var fakeHubCallerContext = A.Fake<HubCallerContext>();
+            _fakeHubCallerContexts.Add(connectionId, fakeHubCallerContext);
+            
+            A.CallTo(() => fakeHubCallerContext.ConnectionId).Returns(connectionId);
+            A.CallTo(() => _fakeClients.Client(connectionId)).Returns(fakeClient);
+        }
         
-        _connectionId = Guid.NewGuid().ToString();
         _gameId = Guid.NewGuid();
         
-        A.CallTo(() => _fakeHubCallerContext.ConnectionId).Returns(_connectionId);
         A.CallTo(() => _fakeGame.Id).Returns(_gameId);
-        A.CallTo(() => _fakeClients.User(_connectionId)).Returns(_fakeGameClient);
         A.CallTo(() => _fakeGameFactory.CreateGame(A<GameConfigurationRequest>.Ignored))
             .Returns(_fakeGame);
         
@@ -39,11 +50,76 @@ public class GameHubTests
     [Fact]
     public async Task CreateGame_CreatesGame_NotifiesClient()
     {
+        // This has been moved to a private helper method to avoid duplicating code.
+        // This scenario should happen for the bulk of the tests, so I didn't want to rewrite this code over and over again.
+        PlayerCreatesLobby();
+    }
+
+    [Fact]
+    public async Task JoinGame_Fails_If_Game_NotFound()
+    {
+        var connectionId = _connectionIds.First();
+        var fakeHubCallerContext = _fakeHubCallerContexts[connectionId];
+        var fakeGameClient = _fakeGameClients[connectionId];
+        
         // arrange
         var hub = new GameHub
         {
             Clients = _fakeClients,
-            Context = _fakeHubCallerContext,
+            Context = fakeHubCallerContext,
+        };
+
+        // act
+        await hub.JoinGame(_gameId.ToString());
+
+        // assert
+        A.CallTo(() => _fakeGameFactory.CreateGame(A<GameConfigurationRequest>.Ignored))
+            .MustNotHaveHappened(); // Ensure no game was created
+
+        A.CallTo(() => fakeGameClient.JoinedGame(A<string>.Ignored))
+            .MustNotHaveHappened(); // Ensure client does not receive a joined game notification
+        
+        A.CallTo(() => fakeGameClient.SendError(A<string>.Ignored))
+            .MustHaveHappenedOnceExactly(); // Ensure the client was notified of an error
+    }
+
+    [Fact]
+    public async Task AllClients_JoinGame_Succeeds()
+    {
+        PlayerCreatesLobby();
+
+        foreach (var connectionId in _connectionIds)
+        {
+            var fakeHubCallerContext = _fakeHubCallerContexts[connectionId];
+            var fakeGameClient = _fakeGameClients[connectionId];
+        
+            // arrange
+            var hub = new GameHub
+            {
+                Clients = _fakeClients,
+                Context = fakeHubCallerContext,
+            };
+
+            // act
+            await hub.JoinGame(_gameId.ToString());
+
+            // assert
+            A.CallTo(() => fakeGameClient.JoinedGame(A<string>.Ignored))
+                .MustHaveHappenedOnceExactly(); // Ensure client joins
+        }
+    }
+    
+    private async Task PlayerCreatesLobby()
+    {
+        var connectionId = _connectionIds.First();
+        var fakeHubCallerContext = _fakeHubCallerContexts[connectionId];
+        var fakeGameClient = _fakeGameClients[connectionId];
+        
+        // arrange
+        var hub = new GameHub
+        {
+            Clients = _fakeClients,
+            Context = fakeHubCallerContext,
         };
 
         // act
@@ -53,7 +129,7 @@ public class GameHubTests
         A.CallTo(() => _fakeGameFactory.CreateGame(A<GameConfigurationRequest>.Ignored))
             .MustHaveHappenedOnceExactly(); // Ensure the factory was used
 
-        A.CallTo(() => _fakeGameClient.GameCreated(_gameId.ToString()))
+        A.CallTo(() => fakeGameClient.GameCreated(_gameId.ToString()))
             .MustHaveHappenedOnceExactly(); // Ensure the client was notified
     }
 }
