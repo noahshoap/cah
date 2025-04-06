@@ -52,25 +52,13 @@ public class GameHubTests
     {
         // This has been moved to a private helper method to avoid duplicating code.
         // This scenario should happen for the bulk of the tests, so I didn't want to rewrite this code over and over again.
-        PlayerCreatesLobby();
+        await PlayerCreatesLobby();
     }
 
     [Fact]
     public async Task JoinGame_Fails_If_Game_NotFound()
     {
-        var connectionId = _connectionIds.First();
-        var fakeHubCallerContext = _fakeHubCallerContexts[connectionId];
-        var fakeGameClient = _fakeGameClients[connectionId];
-        
-        // arrange
-        var hub = new GameHub
-        {
-            Clients = _fakeClients,
-            Context = fakeHubCallerContext,
-        };
-
-        // act
-        await hub.JoinGame(_gameId.ToString());
+        var fakeGameClient = await PlayerJoinsGame();
 
         // assert
         A.CallTo(() => _fakeGameFactory.CreateGame(A<GameConfigurationRequest>.Ignored))
@@ -86,22 +74,11 @@ public class GameHubTests
     [Fact]
     public async Task AllClients_JoinGame_Succeeds()
     {
-        PlayerCreatesLobby();
+        await PlayerCreatesLobby();
 
         foreach (var connectionId in _connectionIds)
         {
-            var fakeHubCallerContext = _fakeHubCallerContexts[connectionId];
-            var fakeGameClient = _fakeGameClients[connectionId];
-        
-            // arrange
-            var hub = new GameHub
-            {
-                Clients = _fakeClients,
-                Context = fakeHubCallerContext,
-            };
-
-            // act
-            await hub.JoinGame(_gameId.ToString());
+            var fakeGameClient = await PlayerJoinsGame(connectionId);
 
             // assert
             A.CallTo(() => fakeGameClient.JoinedGame(A<string>.Ignored))
@@ -131,5 +108,24 @@ public class GameHubTests
 
         A.CallTo(() => fakeGameClient.GameCreated(_gameId.ToString()))
             .MustHaveHappenedOnceExactly(); // Ensure the client was notified
+    }
+
+    private async Task<IGameClient> PlayerJoinsGame(string? connectionId = null)
+    {
+        connectionId ??= _connectionIds.First();
+        var fakeHubCallerContext = _fakeHubCallerContexts[connectionId];
+        var fakeGameClient = _fakeGameClients[connectionId];
+        
+        // arrange
+        var hub = new GameHub
+        {
+            Clients = _fakeClients,
+            Context = fakeHubCallerContext,
+        };
+
+        // act
+        await hub.JoinGame(_gameId.ToString());
+        
+        return fakeGameClient;
     }
 }

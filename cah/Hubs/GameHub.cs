@@ -14,7 +14,7 @@ public class GameHub : Hub<IGameClient>
         var game = factory.CreateGame(new GameConfigurationRequest());
         
         _games.Add(game.Id.ToString(), game);
-        await Clients.User(Context.ConnectionId).GameCreated(game.Id.ToString());
+        await Clients.Client(Context.ConnectionId).GameCreated(game.Id.ToString());
     }
 
     public async Task JoinGame(string gameId)
