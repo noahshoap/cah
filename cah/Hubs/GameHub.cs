@@ -14,9 +14,21 @@ public class GameHub : Hub<IGameClient>
         var game = factory.CreateGame(new GameConfigurationRequest());
         
         _games.Add(game.Id.ToString(), game);
+        await Clients.User(Context.ConnectionId).GameCreated(game.Id.ToString());
+    }
 
+    public async Task JoinGame(string gameId)
+    {
+        var gameFound = _games.TryGetValue(gameId, out var game);
+
+        if (gameFound == false)
+        {
+            await Clients.Client(Context.ConnectionId).SendError($"A game with id {gameId} was not found.");
+            return;
+        }
+        
         game.AddPlayer(Context.ConnectionId);
         
-        await Clients.User(Context.ConnectionId).GameCreated(game.Id.ToString());
+        await Clients.Client(Context.ConnectionId).JoinedGame($"Successfully joined game {gameId}");
     }
 }

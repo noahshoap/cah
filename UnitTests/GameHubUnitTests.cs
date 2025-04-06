@@ -37,7 +37,7 @@ public class GameHubTests
     }
     
     [Fact]
-    public async Task CreateGame_CreatesGame_AddsPlayer_AndNotifiesClient()
+    public async Task CreateGame_CreatesGame_NotifiesClient()
     {
         // arrange
         var hub = new GameHub
@@ -52,9 +52,6 @@ public class GameHubTests
         // assert
         A.CallTo(() => _fakeGameFactory.CreateGame(A<GameConfigurationRequest>.Ignored))
             .MustHaveHappenedOnceExactly(); // Ensure the factory was used
-
-        A.CallTo(() => _fakeGame.AddPlayer(_connectionId))
-            .MustHaveHappenedOnceExactly(); // Ensure the player was added
 
         A.CallTo(() => _fakeGameClient.GameCreated(_gameId.ToString()))
             .MustHaveHappenedOnceExactly(); // Ensure the client was notified
