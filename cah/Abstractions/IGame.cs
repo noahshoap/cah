@@ -5,6 +5,7 @@ namespace cah.Abstractions;
 public interface IGame
 {
     public Guid Id { get; }
-    public void AddPlayer(string playerName);
+    public Task AddPlayer(IPlayer player);
     public Task LoadCardSet(ICardSet cardSet);
+    public Task StartGame();
 }

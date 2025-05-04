@@ -27,7 +27,9 @@ public class GameHub : Hub<IGameClient>
             return;
         }
         
-        game.AddPlayer(Context.ConnectionId);
+        // TODO: Use `IPlayerService`.
+        var player = new Player(Context.ConnectionId, "JohnDoe");
+        game.AddPlayer(player);
         
         await Clients.Client(Context.ConnectionId).JoinedGame($"Successfully joined game {gameId}");
     }

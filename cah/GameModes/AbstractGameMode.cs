@@ -4,23 +4,42 @@ namespace cah.Abstractions;
 
 public abstract class AbstractGameMode(Guid id) : IGame
 {
-    protected List<Card> QuestionCards { get; set; } = new();
-    protected List<Card> AnswerCards { get; set; } = new();
-    private Dictionary<string, string> Players = new();
+    protected HashSet<Card> QuestionCards { get; set; } = new();
+    protected HashSet<Card> AnswerCards { get; set; } = new();
+    private List<IPlayer> Players { get; set; } = new();
+    private bool _started;
     public Guid Id { get; } = id;
 
-    public void AddPlayer(string playerName)
+    public async Task StartGame()
     {
-        Players.Add(playerName, playerName);
+        if (_started) return;
+        _started = true;
+        
+    }
+    
+    public async Task AddPlayer(IPlayer player)
+    {
+        Players.Add(player);
     }
 
+    // TODO: This method should just use `ICardService` and call `GetCardsFromSets`.
     public async Task LoadCardSet(ICardSet cardSet)
     {
         var cards = cardSet.GetCards();
-        var questionCards = cards.Where(c => c.Type == CardType.Question);
-        var answerCards = cards.Where(c => c.Type == CardType.Answer);
-        
-        QuestionCards.AddRange(questionCards);
-        AnswerCards.AddRange(answerCards);
+
+        foreach (var card in cards)
+        {
+            switch (card.Type)
+            {
+                case CardType.Question:
+                    QuestionCards.Add(card);
+                    break;
+                case CardType.Answer:
+                    AnswerCards.Add(card);
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unknown card type: {card.Type}");
+            }
+        }
     }
 }
