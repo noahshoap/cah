@@ -2,14 +2,20 @@ using cah.Domain;
 
 namespace cah.Abstractions;
 
-public abstract class AbstractGameMode(Guid id) : IGame
+public abstract class AbstractGameMode : IGame
 {
     protected HashSet<Card> QuestionCards { get; set; } = new();
     protected HashSet<Card> AnswerCards { get; set; } = new();
     private List<IPlayer> Players { get; set; } = new();
     private bool _started;
-    public Guid Id { get; } = id;
+    public Guid Id { get; }
 
+    public AbstractGameMode(Guid id, IEnumerable<Card> cards)
+    {
+        Id = id;
+        LoadCards(cards);
+    }
+    
     public async Task StartGame()
     {
         if (_started) return;
@@ -21,12 +27,9 @@ public abstract class AbstractGameMode(Guid id) : IGame
     {
         Players.Add(player);
     }
-
-    // TODO: This method should just use `ICardService` and call `GetCardsFromSets`.
-    public async Task LoadCardSet(ICardSet cardSet)
+    
+    private async Task LoadCards(IEnumerable<Card> cards)
     {
-        var cards = cardSet.GetCards();
-
         foreach (var card in cards)
         {
             switch (card.Type)

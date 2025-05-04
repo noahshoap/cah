@@ -3,7 +3,7 @@ using cah.Domain;
 
 namespace UnitTests;
 
-internal class ConcreteGameMode(Guid id) : AbstractGameMode(id)
+internal class ConcreteGameMode(Guid id, IEnumerable<Card> cards) : AbstractGameMode(id, cards)
 {
     public IEnumerable<Card> GetQuestionCards()
     {
@@ -22,17 +22,12 @@ public class AbstractGameModeUnitTests
 
     public AbstractGameModeUnitTests()
     {
-        _sut = new ConcreteGameMode(Guid.NewGuid());
+        _sut = new ConcreteGameMode(Guid.NewGuid(), GetCards());
     }
 
     [Fact]
     public void AbstractGameMode_Loads_Cards()
     {
-        // arrange
-        var cardSet = CreateCardSet();
-        
-        _sut.LoadCardSet(cardSet);
-        
         // act
         var questionCards = _sut.GetQuestionCards();
         var answerCards = _sut.GetAnswerCards();
@@ -42,7 +37,7 @@ public class AbstractGameModeUnitTests
         Assert.NotEmpty(answerCards);
     }
     
-    private ICardSet CreateCardSet()
+    private IEnumerable<Card> GetCards()
     {
         var cards = new List<Card>
         {
@@ -52,9 +47,6 @@ public class AbstractGameModeUnitTests
             new Card(3, "hello?", CardType.Question, "base"),
         };
 
-        var cardSet = new CardSet();
-        cards.ForEach(cardSet.AddCard);
-        
-        return cardSet;
+        return cards;
     }
 }

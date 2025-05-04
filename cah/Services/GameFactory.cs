@@ -12,8 +12,8 @@ public class GameFactory : IGameFactory
         
         IGame gameInstance = configuration.GameMode switch
         {
-            "base" => new BaseGameMode(gameId),
-            "democracy" => new DemocracyGameMode(gameId),
+            "base" => new BaseGameMode(gameId, configuration.Cards),
+            "democracy" => new DemocracyGameMode(gameId, configuration.Cards),
             _ => throw new NotImplementedException($"Game mode {configuration.GameMode} does not exist."),
         };
 
