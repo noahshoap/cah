@@ -12,4 +12,5 @@ public interface IPlayer
     public Task UpdateConnectionId(string newConnectionId);
     public Task DealCard(Card card);
     public Task PlayCard(Card card);
+    public Task<int> GetCardCount();
 }

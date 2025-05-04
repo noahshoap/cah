@@ -27,6 +27,17 @@ public abstract class AbstractGameMode : IGame
     {
         Players.Add(player);
     }
+
+    private async Task DealCards()
+    {
+        foreach (var player in Players)
+        {
+            var playerCardCount = await player.GetCardCount();
+            var cardsNeeded = (1 - playerCardCount);
+            var cardsToDeal = AnswerCards.Take(cardsNeeded).ToList();
+            cardsToDeal.ForEach(card => player.DealCard(card));
+        }
+    }
     
     private async Task LoadCards(IEnumerable<Card> cards)
     {

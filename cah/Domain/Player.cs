@@ -41,4 +41,9 @@ public class Player : IPlayer
         
         // TODO: Actually play the card.
     }
+
+    public async Task<int> GetCardCount()
+    {
+        return _cards.Count;
+    }
 }
