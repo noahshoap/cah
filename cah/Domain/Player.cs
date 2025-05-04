@@ -4,7 +4,7 @@ namespace cah.Domain;
 
 public class Player : IPlayer
 {
-    private List<Card> _cards = new();
+    private HashSet<Card> _cards = new();
     public string Name { get; private set; }
     public string ConnectionId { get; private set; }
     public uint Points { get; }
@@ -30,5 +30,15 @@ public class Player : IPlayer
     public async Task DealCard(Card card)
     {
         _cards.Add(card);
+    }
+
+    public async Task PlayCard(Card card)
+    {
+        if (_cards.Contains(card))
+        {
+            _cards.Remove(card);
+        }
+        
+        // TODO: Actually play the card.
     }
 }

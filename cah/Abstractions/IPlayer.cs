@@ -11,4 +11,5 @@ public interface IPlayer
     public Task UpdateName(string newName);
     public Task UpdateConnectionId(string newConnectionId);
     public Task DealCard(Card card);
+    public Task PlayCard(Card card);
 }
