@@ -17,5 +17,8 @@
     &lt;TestId&gt;xUnit::6EBDDB18-A4A7-4774-96FD-1861D125BF93::net8.0::UnitTests.GameFactoryUnitTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::6EBDDB18-A4A7-4774-96FD-1861D125BF93::net8.0::GameHubTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::6EBDDB18-A4A7-4774-96FD-1861D125BF93::net8.0::UnitTests.AbstractGameModeUnitTests.AbstractGameMode_Loads_Cards&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::6EBDDB18-A4A7-4774-96FD-1861D125BF93::net8.0::UnitTests.PlayerServiceUnitTests.CreatePlayer_ShouldCreatePlayer&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::6EBDDB18-A4A7-4774-96FD-1861D125BF93::net8.0::UnitTests.PlayerServiceUnitTests.RemovePlayer_ShouldRemovePlayer&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::6EBDDB18-A4A7-4774-96FD-1861D125BF93::net8.0::UnitTests.PlayerServiceUnitTests.UpdatePlayer_ShouldUpdatePlayer&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
