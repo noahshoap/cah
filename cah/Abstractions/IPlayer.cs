@@ -4,6 +4,7 @@ namespace cah.Abstractions;
 
 public interface IPlayer
 {
+    public Guid Id { get; }
     public string Name { get; }
     public string ConnectionId { get; }
     public uint Points { get; }

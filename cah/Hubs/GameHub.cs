@@ -17,7 +17,7 @@ public class GameHub : Hub<IGameClient>
         await Clients.Client(Context.ConnectionId).GameCreated(game.Id.ToString());
     }
 
-    public async Task JoinGame(string gameId)
+    public async Task JoinGame(IPlayerService playerService, string gameId, string playerName = "JohnDoe")
     {
         var gameFound = _games.TryGetValue(gameId, out var game);
 
@@ -27,8 +27,7 @@ public class GameHub : Hub<IGameClient>
             return;
         }
         
-        // TODO: Use `IPlayerService`.
-        var player = new Player(Context.ConnectionId, "JohnDoe");
+        var player = await playerService.CreatePlayer(Context.ConnectionId, playerName);
         game.AddPlayer(player);
         
         await Clients.Client(Context.ConnectionId).JoinedGame($"Successfully joined game {gameId}");

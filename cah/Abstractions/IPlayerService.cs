@@ -2,6 +2,8 @@ namespace cah.Abstractions;
 
 public interface IPlayerService
 {
-    public Task AddPlayer(string contextId, string? playerName);
-    public Task RemovePlayer(string contextId);
+    public int PlayerCount { get; }
+    public Task<IPlayer> CreatePlayer(string contextId, string? playerName);
+    public Task RemovePlayer(Guid playerId);
+    public Task UpdatePlayer(Guid playerId, string? contextId, string? playerName);
 }

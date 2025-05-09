@@ -5,12 +5,14 @@ namespace cah.Domain;
 public class Player : IPlayer
 {
     private HashSet<Card> _cards = new();
+    public Guid Id { get;}
     public string Name { get; private set; }
     public string ConnectionId { get; private set; }
     public uint Points { get; }
     
-    public Player(string connectionId, string? playerName)
+    public Player(Guid playerId, string connectionId, string? playerName)
     {
+        Id = playerId;
         ConnectionId = connectionId;
         Name = playerName ?? "Player";
     }
@@ -26,7 +28,7 @@ public class Player : IPlayer
         // TODO: Consider just making the setter public?  I'm not sure.  I like the explicitness of this for this use case.
         ConnectionId = newConnectionId;
     }
-
+    
     public async Task DealCard(Card card)
     {
         _cards.Add(card);
