@@ -19,16 +19,11 @@ public class GameHub : Hub<IGameClient>
         var httpContext = Context.GetHttpContext();
         var playerIdFromClient = httpContext?.Request.Query["playerId"].FirstOrDefault();
         var playerNameFromClient = httpContext?.Request.Query["playerName"].FirstOrDefault();
-
-        if (string.IsNullOrWhiteSpace(playerIdFromClient))
+        var playerId = await _playerService.PlayerConnected(playerIdFromClient, Context.ConnectionId, playerNameFromClient);
+        
+        if (string.IsNullOrEmpty(playerIdFromClient))
         {
-            var player = await _playerService.CreatePlayer(Context.ConnectionId, playerNameFromClient ?? "Player");
-            await Clients.Caller.AssignPlayerId(player.Id);
-        }
-        else
-        {
-            var guidId = Guid.Parse(playerIdFromClient);
-            await _playerService.UpdatePlayer(guidId, Context.ConnectionId, playerNameFromClient);
+            await Clients.Caller.AssignPlayerId(playerId);
         }
         
         await base.OnConnectedAsync();
@@ -65,6 +60,7 @@ public class GameHub : Hub<IGameClient>
         await Clients.Client(Context.ConnectionId).JoinedGame($"Successfully joined game {gameId}");
     }
 
+    // TODO: Should probably remove this.
     private Guid GetPlayerIdFromContext()
     {
         var httpContext = Context.GetHttpContext();

@@ -45,4 +45,24 @@ public class PlayerService : IPlayerService
             player.UpdateName(playerName);
         }
     }
+
+    public async Task<Guid> PlayerConnected(string? playerId, string connectionId, string? playerName)
+    {
+        IPlayer player;
+        
+        if (string.IsNullOrEmpty(playerId))
+        {
+            player = await CreatePlayer(connectionId, playerName ?? "Player");
+        }
+        else
+        {
+            // An exception could still get thrown here, but we are assuming that the client only ever passes null/empty or correctly formatted GUIDs.
+            // Considering I am the only one who will use this, I am fine with that assumption for now.
+            var playerIdGuid = Guid.Parse(playerId);
+            await UpdatePlayer(playerIdGuid, connectionId, playerName);
+            player = await GetPlayer(playerIdGuid);
+        }
+        
+        return player.Id;
+    }
 }
