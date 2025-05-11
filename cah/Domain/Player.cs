@@ -9,7 +9,8 @@ public class Player : IPlayer
     public string Name { get; private set; }
     public string ConnectionId { get; private set; }
     public uint Points { get; }
-    
+    public bool IsDisconnected { get; set; }
+
     public Player(Guid playerId, string connectionId, string? playerName)
     {
         Id = playerId;

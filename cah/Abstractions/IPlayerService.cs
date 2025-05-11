@@ -8,4 +8,5 @@ public interface IPlayerService
     public Task RemovePlayer(Guid playerId);
     public Task UpdatePlayer(Guid playerId, string? contextId, string? playerName);
     public Task<Guid> PlayerConnected(string? playerId, string connectionId, string? playerName);
+    public Task PlayerDisconnected(string connectionId);
 }
