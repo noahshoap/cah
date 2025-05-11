@@ -78,7 +78,7 @@ public class PlayerService : IPlayerService
     {
         if (!_playersByConnection.TryGetValue(connectionId, out var player)) return;
 
-        await Task.Delay(TimeSpan.FromMilliseconds(DISCONNECT_REMOVE_DELAY_MINUTES));
+        await Task.Delay(TimeSpan.FromMinutes(DISCONNECT_REMOVE_DELAY_MINUTES));
 
         if (player.IsDisconnected)
         {
