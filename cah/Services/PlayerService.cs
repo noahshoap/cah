@@ -16,6 +16,7 @@ public class PlayerService : IPlayerService
         var playerId = Guid.NewGuid();
         var player = new Player(playerId, contextId, playerName);
         _players.TryAdd(playerId, player);
+        _playersByConnection.TryAdd(contextId, player);
         
         return player;
     }
