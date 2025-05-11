@@ -6,7 +6,7 @@ public abstract class AbstractGameMode : IGame
 {
     protected HashSet<Card> QuestionCards { get; set; } = new();
     protected HashSet<Card> AnswerCards { get; set; } = new();
-    private List<IPlayer> Players { get; set; } = new();
+    private HashSet<IPlayer> Players { get; set; } = new();
     private bool _started;
     public Guid Id { get; }
 
@@ -25,6 +25,8 @@ public abstract class AbstractGameMode : IGame
     
     public async Task AddPlayer(IPlayer player)
     {
+        player.PlayerDisconnected += RemoveDisconnectedPlayer;
+        player.CardPlayed += PlayerPlayedCard;
         Players.Add(player);
     }
 
@@ -55,5 +57,15 @@ public abstract class AbstractGameMode : IGame
                     throw new InvalidOperationException($"Unknown card type: {card.Type}");
             }
         }
+    }
+    
+    private void RemoveDisconnectedPlayer(object? sender, PlayerArgs e)
+    {
+        Players.Remove(e.Player);
+    }
+
+    private void PlayerPlayedCard(object? sender, PlayerPlayedCardArgs e)
+    {
+        
     }
 }

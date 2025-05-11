@@ -5,6 +5,8 @@ namespace cah.Domain;
 public class Player : IPlayer
 {
     private HashSet<Card> _cards = new();
+    public event EventHandler<PlayerArgs> PlayerDisconnected;
+    public event EventHandler<PlayerPlayedCardArgs> CardPlayed;
     public Guid Id { get;}
     public string Name { get; private set; }
     public string ConnectionId { get; private set; }
@@ -42,7 +44,12 @@ public class Player : IPlayer
             _cards.Remove(card);
         }
         
-        // TODO: Actually play the card.
+        CardPlayed.Invoke(this, new PlayerPlayedCardArgs(this, card));
+    }
+
+    public async Task RemoveFromGame()
+    {
+        PlayerDisconnected.Invoke(this, new PlayerArgs(this));
     }
 
     public async Task<int> GetCardCount()

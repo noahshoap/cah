@@ -71,6 +71,8 @@ public class PlayerService : IPlayerService
             _playersByConnection.TryAdd(player.ConnectionId, player);
         }
         
+        player.IsDisconnected = false;
+        
         return player.Id;
     }
 
@@ -78,13 +80,14 @@ public class PlayerService : IPlayerService
     {
         if (!_playersByConnection.TryGetValue(connectionId, out var player)) return;
 
+        player.IsDisconnected = true;
+        
         await Task.Delay(TimeSpan.FromMinutes(DISCONNECT_REMOVE_DELAY_MINUTES));
 
         if (player.IsDisconnected)
         {
             // TODO:
-            // We need to remove the player from the game.
-            // Do that manually or use events?
+            player.RemoveFromGame();
             _players.TryRemove(player.Id, out _);
             _playersByConnection.TryRemove(player.ConnectionId, out _);
         }
