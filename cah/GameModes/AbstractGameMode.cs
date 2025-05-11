@@ -51,17 +51,10 @@ public abstract class AbstractGameMode : IGame
     {
         foreach (var card in cards)
         {
-            switch (card.Type)
-            {
-                case CardType.Question:
-                    QuestionCards.Enqueue(card);
-                    break;
-                case CardType.Answer:
-                    AnswerCards.Enqueue(card);
-                    break;
-                default:
-                    throw new InvalidOperationException($"Unknown card type: {card.Type}");
-            }
+            if (card.Type == CardType.Question)
+                QuestionCards.Enqueue(card);
+            else if (card.Type == CardType.Answer)
+                AnswerCards.Enqueue(card);
         }
     }
     
