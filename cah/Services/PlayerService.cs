@@ -84,10 +84,10 @@ public class PlayerService : IPlayerService
         
         await Task.Delay(TimeSpan.FromMinutes(DISCONNECT_REMOVE_DELAY_MINUTES));
 
+        // If the player has still not reconnected, kick them from the game and our in-memory player store.
         if (player.IsDisconnected)
         {
-            // TODO:
-            player.RemoveFromGame();
+            player.Disconnect();
             _players.TryRemove(player.Id, out _);
             _playersByConnection.TryRemove(player.ConnectionId, out _);
         }

@@ -4,8 +4,8 @@ namespace cah.Abstractions;
 
 public abstract class AbstractGameMode : IGame
 {
-    protected HashSet<Card> QuestionCards { get; set; } = new();
-    protected HashSet<Card> AnswerCards { get; set; } = new();
+    protected Queue<Card> QuestionCards { get; set; } = new();
+    protected Queue<Card> AnswerCards { get; set; } = new();
     private HashSet<IPlayer> Players { get; set; } = new();
     private bool _started;
     public Guid Id { get; }
@@ -36,8 +36,14 @@ public abstract class AbstractGameMode : IGame
         {
             var playerCardCount = await player.GetCardCount();
             var cardsNeeded = (1 - playerCardCount);
-            var cardsToDeal = AnswerCards.Take(cardsNeeded).ToList();
-            cardsToDeal.ForEach(card => player.DealCard(card));
+            var cardsToDeal = new List<Card>();
+            
+            for (var i = 0; i < cardsNeeded; i++)
+            {
+                cardsToDeal.Add(AnswerCards.Dequeue());
+            }
+
+            await player.ReceiveCards(cardsToDeal);
         }
     }
     
@@ -48,10 +54,10 @@ public abstract class AbstractGameMode : IGame
             switch (card.Type)
             {
                 case CardType.Question:
-                    QuestionCards.Add(card);
+                    QuestionCards.Enqueue(card);
                     break;
                 case CardType.Answer:
-                    AnswerCards.Add(card);
+                    AnswerCards.Enqueue(card);
                     break;
                 default:
                     throw new InvalidOperationException($"Unknown card type: {card.Type}");
@@ -59,9 +65,9 @@ public abstract class AbstractGameMode : IGame
         }
     }
     
-    private void RemoveDisconnectedPlayer(object? sender, PlayerArgs e)
+    private void RemoveDisconnectedPlayer(object? sender, EventArgs e)
     {
-        Players.Remove(e.Player);
+        Players.Remove((IPlayer)sender);
     }
 
     private void PlayerPlayedCard(object? sender, PlayerPlayedCardArgs e)

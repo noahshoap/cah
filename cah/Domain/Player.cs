@@ -5,7 +5,7 @@ namespace cah.Domain;
 public class Player : IPlayer
 {
     private HashSet<Card> _cards = new();
-    public event EventHandler<PlayerArgs> PlayerDisconnected;
+    public event EventHandler PlayerDisconnected;
     public event EventHandler<PlayerPlayedCardArgs> CardPlayed;
     public Guid Id { get;}
     public string Name { get; private set; }
@@ -32,9 +32,12 @@ public class Player : IPlayer
         ConnectionId = newConnectionId;
     }
     
-    public async Task DealCard(Card card)
+    public async Task ReceiveCards(IEnumerable<Card> cards)
     {
-        _cards.Add(card);
+        foreach (var card in cards)
+        {
+            _cards.Add(card);
+        }
     }
 
     public async Task PlayCard(Card card)
@@ -47,9 +50,9 @@ public class Player : IPlayer
         CardPlayed.Invoke(this, new PlayerPlayedCardArgs(this, card));
     }
 
-    public async Task RemoveFromGame()
+    public async Task Disconnect()
     {
-        PlayerDisconnected.Invoke(this, new PlayerArgs(this));
+        PlayerDisconnected.Invoke(this, EventArgs.Empty);
     }
 
     public async Task<int> GetCardCount()
