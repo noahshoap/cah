@@ -18,6 +18,14 @@ public class PlayerService : IPlayerService
         return player;
     }
 
+    public async Task<IPlayer> GetPlayer(Guid playerId)
+    {
+        if (!_players.TryGetValue(playerId, out var player))
+            throw new InvalidOperationException($"Player with id {playerId} was not found.");
+        
+        return player;
+    }
+
     public async Task RemovePlayer(Guid playerId)
     {
         _players.TryRemove(playerId, out _);
